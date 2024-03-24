@@ -6,7 +6,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Klient
+namespace Klient.Communicators
 {
     internal class TCPCommunicator : ClientCommunicator
     {
@@ -18,12 +18,12 @@ namespace Klient
         {
             this.hostname = hostname;
             this.port = port;
-            this.client = new TcpClient(hostname, port);
+            client = new TcpClient(hostname, port);
         }
 
         public override string QA(string question)
         {
-            byte[] data = System.Text.Encoding.ASCII.GetBytes(question);
+            byte[] data = Encoding.ASCII.GetBytes(question);
             NetworkStream stream = client.GetStream();
             Console.WriteLine($"S: {data.Length} B, {question.SubstringMax(40)}");
             stream.Write(data, 0, data.Length);
@@ -33,7 +33,7 @@ namespace Klient
             do
             {
                 bytes = stream.Read(data, 0, data.Length);
-                odp += System.Text.Encoding.ASCII.GetString(data, 0, bytes);
+                odp += Encoding.ASCII.GetString(data, 0, bytes);
             }
             while (odp.LastIndexOf('\n') == -1);
             Console.WriteLine($"Odp: {odp.Length} B, {odp.SubstringMax(40)}");

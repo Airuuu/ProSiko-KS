@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Commons;
+using Klient.Communicators;
 
-namespace Klient
+namespace Klient.Clients
 {
     internal class PingClient : QAClient
     {
-        public PingClient(ClientCommunicator clientCommunicator) 
+        public PingClient(ClientCommunicator clientCommunicator)
             : base(clientCommunicator)
         {
         }
@@ -21,7 +22,7 @@ namespace Klient
             question += '\n';
 
             DateTime startTime = DateTime.Now;
-            for (int i=0; i< amount; i++)
+            for (int i = 0; i < amount; i++)
             {
                 //Console.WriteLine($"S: {question}");
                 string answer = clientCommunicator.QA(question);

@@ -19,5 +19,13 @@ namespace Commons
         {
             return str.Substring(0, Math.Min(len, str.Length));
         }
+
+        public static int GetAnswerLength(string command)
+        {
+            var separator = " ";
+            var i = command.IndexOf(separator);
+            var j = command.IndexOf(separator, i + 1);
+            return int.Parse(command.Substring(i + 1, j - i - 1));
+        }
     }
 }

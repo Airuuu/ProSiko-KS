@@ -1,4 +1,5 @@
 ﻿using Commons;
+using Serwer.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Serwer
+namespace Serwer.Communicators
 {
     internal class TCPCommunicator : ICommunicator
     {
@@ -53,13 +54,14 @@ namespace Serwer
                         string line = data.Substring(0, nl + 1);
                         data = data.Substring(nl + 1);
                         Console.WriteLine($"R: {line.Length} B, {line.SubstringMax(40)}");
-                        string answer = this.onCommand(line);
+                        string answer = onCommand(line);
                         Console.WriteLine($"S: {answer.Length} B, {answer.SubstringMax(40)}");
                         byte[] msg = Encoding.ASCII.GetBytes(answer);
                         stream.Write(msg, 0, msg.Length);
                     }
                 }
-            } catch { }
+            }
+            catch { }
             if (client.Connected)
             {
                 client.Close();

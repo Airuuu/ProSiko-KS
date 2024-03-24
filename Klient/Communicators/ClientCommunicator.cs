@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Klient
+namespace Klient.Communicators
 {
     internal abstract class ClientCommunicator
     {

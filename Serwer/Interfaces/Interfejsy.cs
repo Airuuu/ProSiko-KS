@@ -4,16 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Serwer
+namespace Serwer.Interfaces
 {
     public delegate string CommandD(string command);
     public delegate void CommunicatorD(ICommunicator commander);
 
-    public interface IServiceModule {
+    public interface IServiceModule
+    {
         string AnswerCommand(string command);
     }
 
-    public interface ICommunicator {
+    public interface ICommunicator
+    {
         void Start(CommandD onCommand, CommunicatorD onDisconnect);
         void Stop();
     }

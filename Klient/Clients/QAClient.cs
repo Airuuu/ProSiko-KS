@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Klient.Communicators;
 
-namespace Klient
+namespace Klient.Clients
 {
     internal class QAClient
     {

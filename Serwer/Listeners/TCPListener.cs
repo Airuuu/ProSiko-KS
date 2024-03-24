@@ -2,8 +2,10 @@
 using System.Net;
 using System.Text;
 using System.Threading;
+using Serwer.Interfaces;
+using Serwer.Communicators;
 
-namespace Serwer
+namespace Serwer.Listeners
 {
 
     internal class TCPListener : IListener
@@ -14,8 +16,8 @@ namespace Serwer
         TcpListener server;
         bool shouldTerminate;
 
-        public TCPListener(int portNo) { this.portNo  = portNo; }
-        
+        public TCPListener(int portNo) { this.portNo = portNo; }
+
         public void Start(CommunicatorD onConnect)
         {
             this.onConnect = onConnect;
