@@ -1,0 +1,9 @@
+2024-03-18 - Do zrobienia:
+	- Us³ugi:
+		- ftp
+		- msg
+		- config
+	- Komunikatory
+		- przez pliki - z u¿yciem klasy FileSystemWatcher
+
+2024-03-25 - dodatkowo komunikator przez port szeregowy
