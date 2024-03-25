@@ -23,17 +23,24 @@ namespace Klient.Clients
 
             if (File.Exists(filePath))
             {
-                DateTime startTime = DateTime.Now;
-                using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read))
-                {
-                    question += File.ReadAllText(filePath);
-                    question += "\n";
+                //DateTime startTime = DateTime.Now;
+                //using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read))
+                //{
+                //    question += File.ReadAllText(filePath);
+                //    question += "\n";
 
-                    string answer = clientCommunicator.QA(question);
-                    DateTime endTime = DateTime.Now;
-                    double duration = (endTime - startTime).TotalSeconds;
-                    return duration;
-                }
+                //    string answer = clientCommunicator.QA(question);
+                //    DateTime endTime = DateTime.Now;
+                //    double duration = (endTime - startTime).TotalSeconds;
+                //    return duration;
+                //}
+
+                //using (StreamReader sr = new StreamReader(filePath))
+                //{
+                    Byte[] bytes = File.ReadAllBytes(filePath);
+                    String file = Convert.ToBase64String(bytes);
+                //Console.WriteLine(file);
+                //}
 
                 //Console.WriteLine(question);
             }
