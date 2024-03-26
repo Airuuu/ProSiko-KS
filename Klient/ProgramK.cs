@@ -15,42 +15,33 @@ internal class Program
     private static void Main(string[] args)
     {
         TCPCommunicator clientCommunicator = new TCPCommunicator("localhost", 12345);
-        //while (true)
-        //{
-
-        //}
-        //PingClient pc = new PingClient(clientCommunicator);
-        //double time = pc.Test(10, 1024, 2048);
-        //Console.WriteLine($"Ping client average time: {time}");
-        //FtpClient fc = new FtpClient(clientCommunicator);
-        //double time = fc.FtpPut(@"C:\rules.txt");
-        //double time = fc.FtpPut(@"C:\Users\AirU\Downloads\logos\2.png");
-        //double time = fc.FtpList();
-        //double time = fc.FtpGet("2(2).png");
-        //Console.WriteLine($"Ftp put client average time: {time}");
         Console.WriteLine("Welcome to Giga Server");
+        //Dictionary<string, object> clientCommunicator = new Dictionary<string, object> {
+        //    { "tcp", new TCPCommunicator("localhost", 12345)}
+        //};
 
         while (true)
         {
             Console.Write($"<UserHolder> $ "); string line = Console.ReadLine();
+            string clientComm = ClientTools.GetCommunicator(line);
             string clientType = ClientTools.GetClient(line);
             switch (clientType)
             {
                 case "ping":
                     PingClient pc = new PingClient(clientCommunicator);
                     string[] paramsPing = line.Split(" ");
-                    pc.Test(int.Parse(paramsPing[1]), int.Parse(paramsPing[2]), int.Parse(paramsPing[3]));
+                    pc.Test(int.Parse(paramsPing[2]), int.Parse(paramsPing[3]), int.Parse(paramsPing[4]));
                     break;
                 case "ftp":
                     FtpClient fc = new FtpClient(clientCommunicator);
                     string[] paramsFtp = line.Split(" ");
-                    switch(paramsFtp[1])
+                    switch(paramsFtp[2])
                     {
                         case "put":
-                            fc.FtpPut(paramsFtp[2]);
+                            fc.FtpPut(paramsFtp[3]);
                             break;
                         case "get":
-                            fc.FtpGet(paramsFtp[2]);
+                            fc.FtpGet(paramsFtp[3]);
                             break;
                         case "list":
                             fc.FtpList();

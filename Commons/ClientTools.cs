@@ -10,6 +10,12 @@ namespace Commons
     {
         public static string GetClient(string? line)
         {
+            string type = line.Split(' ')[1];
+            return type;
+        }
+
+        public static string GetCommunicator(string? line)
+        {
             string type = line.Split(' ')[0];
             return type;
         }
