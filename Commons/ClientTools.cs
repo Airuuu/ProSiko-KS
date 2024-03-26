@@ -8,6 +8,12 @@ namespace Commons
 {
     public static class ClientTools
     {
+        public static string GetClient(string? line)
+        {
+            string type = line.Split(' ')[0];
+            return type;
+        }
+
         public static string GetFilePath(string filePath, string fileName)
         {
             int counter = 0;
