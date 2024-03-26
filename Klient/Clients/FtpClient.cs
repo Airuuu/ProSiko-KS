@@ -10,55 +10,56 @@ namespace Klient.Clients
 {
     internal class FtpClient : QAClient
     {
+        private string filePath = @"C:\ftpC\";
+
         public FtpClient(ClientCommunicator clientCommunicator) : base(clientCommunicator)
         {
         }
 
-        public double Test(string filePath)
+        public double FtpPut(string filePath)
         {
-            string question = $"ftp ";
-
-            //question += CommonTools.Trush(outputLen - question.Length - 1);
-            //question += '\n';
+            string question = $"ftp put ";
 
             if (File.Exists(filePath))
             {
-                //DateTime startTime = DateTime.Now;
-                //using (FileStream fs = File.Open(filePath, FileMode.Open, FileAccess.Read))
-                //{
-                //    question += File.ReadAllText(filePath);
-                //    question += "\n";
-
-                //    string answer = clientCommunicator.QA(question);
-                //    DateTime endTime = DateTime.Now;
-                //    double duration = (endTime - startTime).TotalSeconds;
-                //    return duration;
-                //}
-
-                //using (StreamReader sr = new StreamReader(filePath))
-                //{
-                    Byte[] bytes = File.ReadAllBytes(filePath);
-                    String file = Convert.ToBase64String(bytes);
-                //Console.WriteLine(file);
-                //}
-
-                //Console.WriteLine(question);
+                DateTime startTime = DateTime.Now;
+                byte[] bytes = File.ReadAllBytes(filePath);
+                string file = Convert.ToBase64String(bytes);
+                question += $"{file.ToString()} {CommonTools.ScrapFileName(filePath)} \n";
+                string answer = clientCommunicator.QA(question);
+                DateTime endTime = DateTime.Now;
+                double duration = (endTime - startTime).TotalSeconds;
+                return duration;
             }
             else
             {
                 Console.WriteLine("Could not find location : " + filePath);
             }
             return 0;
+        }
 
+        public double FtpList()
+        {
+            string question = $"ftp list \n";
+            DateTime startTime = DateTime.Now;
+            string answer = clientCommunicator.QA(question);
+            Console.WriteLine($"Files on the server : \n {answer}");
+            DateTime endTime = DateTime.Now;
+            double duration = (endTime - startTime).TotalSeconds;
+            return duration;
+        }
 
-
-            //for (int i = 0; i < amount; i++)
-            //{
-            //    //Console.WriteLine($"S: {question}");
-            //    string answer = clientCommunicator.QA(question);
-            //    //Console.WriteLine($"R: {answer}");
-            //}
-
+        public double FtpGet(string fileName)
+        {
+            DateTime startTime = DateTime.Now;
+            string question = $"ftp get {fileName} \n";
+            string answer = clientCommunicator.QA(question);
+            string bytes = CommonTools.ScrapBytes(answer);
+            string filePath = ClientTools.GetFilePath(this.filePath, fileName);
+            File.WriteAllBytes(filePath, Convert.FromBase64String(bytes));
+            DateTime endTime = DateTime.Now;
+            double duration = (endTime - startTime).TotalSeconds;
+            return duration;
         }
     }
 }

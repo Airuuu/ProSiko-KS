@@ -11,28 +11,70 @@ namespace Serwer.Services
 {
     internal class FtpService : IServiceModule
     {
+        private string filePath = @"C:\ftpS\";
         public string AnswerCommand(string command)
         {
-            string filePath = @"C:\ftpS\tmp";
-            if (File.Exists(filePath))
+            string commandType = ServerTools.DetectCommandType(command);
+            string answer;
+            switch(commandType)
             {
-                using (FileStream fs = File.Open(filePath, FileMode.Append, FileAccess.Write))
-                {
-                    //question += File.ReadAllText(filePath);
-                    //question += "\n";
-                    Console.WriteLine("Reading");
+                case "put":
+                    answer = PutService(command);
+                    break;
+                case "get":
+                    answer = GetService(command);
+                    break;
+                case "list":
+                    answer = ListService(command);
+                    break;
+                default:
+                    return "Wrong command option! \n";
+            }
+            return answer;
+        }
 
-                }
-
-                //Console.WriteLine(question);
+        private string GetService(string command)
+        {
+            string fileName = command.Split(" ")[2];
+            Console.WriteLine(filePath);
+            Console.WriteLine(fileName);
+            Console.WriteLine(filePath + fileName);
+            if (File.Exists(this.filePath+fileName))
+            {
+                byte[] bytes = File.ReadAllBytes(filePath+fileName);
+                string file = Convert.ToBase64String(bytes);
+                return $"Sending file {file} \n";
             }
             else
             {
-                Console.WriteLine("Could not find location : " + filePath);
+                return "Could not find file : " + fileName;
             }
+        }
 
-            //int n = CommonTools.GetAnswerLength(command);
-            return command + "\n";
+        private string ListService(string command)
+        {
+            string[] dirFileList = Directory.GetFiles(@"C:\ftpS\");
+            string fileList = "";
+            foreach(string file in dirFileList)
+            {
+                fileList += Path.GetFileName(file).ToString() + "\t";
+            }
+            return fileList + "\n";
+        }
+
+        private string PutService(string command)
+        {
+            string filePath = ServerTools.GetFilePath(command, this.filePath);
+            string bytes = CommonTools.ScrapBytes(command);
+            try
+            {
+                File.WriteAllBytes(filePath, Convert.FromBase64String(bytes));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            return "File uploaded as "+ Path.GetFileName(filePath) + "\n";
         }
     }
 }

@@ -27,5 +27,15 @@ namespace Commons
             var j = command.IndexOf(separator, i + 1);
             return int.Parse(command.Substring(i + 1, j - i - 1));
         }
+        public static string ScrapBytes(string line)
+        {
+            string[] byteLine = line.Split(" ");
+            string bytes = byteLine[2];
+            return bytes;
+        }
+        public static string ScrapFileName(string line)
+        {
+            return line.Split('\\').Last();
+        }
     }
 }

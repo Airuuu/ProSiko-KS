@@ -38,6 +38,7 @@ namespace Serwer
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return $"Service failure with exception: {ex.Message}\n";
             }
         }
