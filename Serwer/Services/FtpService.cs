@@ -36,9 +36,9 @@ namespace Serwer.Services
         private string GetService(string command)
         {
             string fileName = command.Split(" ")[2];
-            Console.WriteLine(filePath);
-            Console.WriteLine(fileName);
-            Console.WriteLine(filePath + fileName);
+            //Console.WriteLine(filePath);
+            //Console.WriteLine(fileName);
+            //Console.WriteLine(filePath + fileName);
             if (File.Exists(this.filePath+fileName))
             {
                 byte[] bytes = File.ReadAllBytes(filePath+fileName);
