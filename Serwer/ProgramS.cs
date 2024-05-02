@@ -15,6 +15,10 @@ namespace Serwer
             Console.WriteLine("Ping initiated");
             serwer.AddServiceModule("ftp", new FtpService());
             Console.WriteLine("Ftp initiated");
+            serwer.AddServiceModule("chat", new ChatService());
+            Console.WriteLine("Chat initiated");
+            serwer.AddServiceModule("conf", new ConfigService());
+            Console.WriteLine("Config initiated");
             serwer.AddListener(new TCPListener(12345));
             serwer.Start();
         }

@@ -24,9 +24,7 @@ namespace Klient.Clients
             DateTime startTime = DateTime.Now;
             for (int i = 0; i < amount; i++)
             {
-                //Console.WriteLine($"S: {question}");
                 string answer = clientCommunicator.QA(question);
-                //Console.WriteLine($"R: {answer}");
             }
             DateTime endTime = DateTime.Now;
             double duration = (endTime - startTime).TotalSeconds / amount;

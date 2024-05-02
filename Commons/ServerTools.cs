@@ -28,6 +28,12 @@ namespace Commons
             }
             return fullPath;
         }
+
+        public static string GetConfigName(string command)
+        {
+            return command.Split(" ")[2].ToLower();
+        }
+
         public static string GetFilePath(string command, string loc)
         {
             //string loc = @"C:\ftpS\";

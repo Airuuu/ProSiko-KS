@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Serwer.Interfaces;
+using Serwer.Services;
 
 namespace Serwer
 {
@@ -16,6 +17,17 @@ namespace Serwer
         public void AddServiceModule(string name, IServiceModule service)
         {
             services.Add(name, service);
+
+            if (service is ConfigService configService)
+            {
+                configService.SetDisconnectService(DisconnectServiceModule);
+            }
+        }
+
+        public string DisconnectServiceModule(string name)
+        {
+            services.Remove(name);
+            return "Service disconnected";
         }
         public void AddCommunicator(ICommunicator communicator)
         {
@@ -33,7 +45,8 @@ namespace Serwer
             try
             {
                 var commandType = GetCommandType(command);
-                var service = services[commandType];
+                var service = services[commandType] ?? null;
+                //service check goes here
                 return service.AnswerCommand(command);
             }
             catch (Exception ex)
