@@ -20,6 +20,7 @@ namespace Serwer
             serwer.AddServiceModule("conf", new ConfigService());
             Console.WriteLine("Config initiated");
             serwer.AddListener(new TCPListener(12345));
+            serwer.AddListener(new UDPListener(12346));
             serwer.Start();
         }
     }

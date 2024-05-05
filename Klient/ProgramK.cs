@@ -10,7 +10,8 @@ internal class Program
 
     private static void Main(string[] args)
     {
-        TCPCommunicator clientCommunicator = new TCPCommunicator("localhost", 12345);
+        //TCPCommunicator clientCommunicator = new TCPCommunicator("localhost", 12345);
+        UDPCommunicator clientCommunicator = new UDPCommunicator("127.0.0.1", 12346);
         Console.WriteLine("Welcome to Giga Server");
         string nickname;
         while (true)
