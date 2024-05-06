@@ -8,27 +8,25 @@ namespace Klient.Communicators
 {
     internal class UDPCommunicator : ClientCommunicator
     {
-        private IPAddress serverAddress;
+        private string serverAddress;
         private int port;
         private UdpClient client;
 
         public UDPCommunicator(string hostname, int port)
         {
-            if (!IPAddress.TryParse(hostname, out serverAddress))
-            {
-                throw new ArgumentException("Invalid IP address format");
-            }
-
+            serverAddress = hostname;
             this.port = port;
             client = new UdpClient();
+            client.Connect(serverAddress, port);
+            //add stop methods for exitting
         }
 
         public override string QA(string question)
         {
             byte[] data = Encoding.ASCII.GetBytes(question);
-            IPEndPoint serverEP = new IPEndPoint(serverAddress, port);
-            client.Send(data, data.Length, serverEP);
-
+            
+            client.Send(data, data.Length);
+            
             IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
             byte[] receiveBytes = client.Receive(ref remoteEP);
             string response = Encoding.ASCII.GetString(receiveBytes);

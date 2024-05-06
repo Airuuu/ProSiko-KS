@@ -11,19 +11,22 @@ namespace Serwer.Communicators
     internal class UDPCommunicator : ICommunicator
     {
         private UdpClient client;
+        private int portNo;
         private CommandD onCommand;
         private CommunicatorD onDisconnect;
         private Thread thread;
         private IPEndPoint remoteEndPoint;
+        private bool shouldTerminate;
 
-        public UDPCommunicator(UdpClient client, IPEndPoint remoteEndPoint)
+        public UDPCommunicator(int portNo)
         {
-            this.client = client;
-            this.remoteEndPoint = remoteEndPoint;
+            this.portNo = portNo;
+            client = new UdpClient(portNo);
         }
 
         public void Start(CommandD onCommand, CommunicatorD onDisconnect)
         {
+            shouldTerminate = false;
             this.onCommand = onCommand;
             this.onDisconnect = onDisconnect;
             thread = new Thread(Communicate);
@@ -32,23 +35,26 @@ namespace Serwer.Communicators
 
         public void Stop()
         {
+            shouldTerminate = true;
             client.Close();
         }
 
         private void Communicate()
         {
-            //while (true)
-            //{
+            while (!shouldTerminate)
+            {
+                IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, portNo);
                 byte[] receiveBytes = client.Receive(ref remoteEndPoint);
+            
+                Console.WriteLine($"UDP connect: {remoteEndPoint}");
                 string request = Encoding.ASCII.GetString(receiveBytes);
-                Console.WriteLine("Received: " + request);
 
                 string response = onCommand(request);
 
                 byte[] sendBytes = Encoding.ASCII.GetBytes(response);
                 client.Send(sendBytes, sendBytes.Length, remoteEndPoint);
-                Console.WriteLine("Sent: " + response);
-            //}
+                
+            }
         }
     }
 }
