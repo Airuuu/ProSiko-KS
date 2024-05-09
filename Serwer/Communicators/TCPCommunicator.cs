@@ -53,9 +53,10 @@ namespace Serwer.Communicators
                     {
                         string line = data.Substring(0, nl + 1);
                         data = data.Substring(nl + 1);
-                        Console.WriteLine($"R: {line.Length} B, {line.SubstringMax(40)}");
+                        Console.WriteLine($"{line.SubstringMax(40)}");
+                        //Console.WriteLine($"R: {line.Length} B, {line.SubstringMax(40)}");
                         string answer = onCommand(line);
-                        Console.WriteLine($"S: {answer.Length} B, {answer.SubstringMax(40)}");
+                        //Console.WriteLine($"S: {answer.Length} B, {answer.SubstringMax(40)}");
                         byte[] msg = Encoding.ASCII.GetBytes(answer);
                         stream.Write(msg, 0, msg.Length);
                     }

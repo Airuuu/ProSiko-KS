@@ -11,6 +11,7 @@ namespace Commons
 {
     public class ServerTools
     {
+
         public static string DetectCommandType(string command)
         {
             return command.Split(' ')[1];
@@ -41,6 +42,21 @@ namespace Commons
             string fileName = lines[lines.Length - 2];
             string filePath = @$"{ServerTools.FileExistCounter(loc, loc + fileName)}";
             return filePath;
+        }
+
+        public static bool GetSpecifiedState(string serviceName, string allStates)
+        {
+            //return allStates.Contains(serviceName);
+            string[] parts = allStates.Split(" ");
+            for (int i = 0; i < parts.Length; i++)
+            {
+                string[] itemAndState = parts[i].Split("\t");
+                if (itemAndState[0] == serviceName && itemAndState[1].ToLower() == "online")
+                    return true;
+                if (itemAndState[0] == serviceName && itemAndState[1].ToLower() == "offline")
+                    return false;
+            }
+            return false;
         }
     }
 }

@@ -16,50 +16,38 @@ namespace Klient.Clients
         {
         }
 
-        public double FtpPut(string filePath)
+        public void FtpPut(string filePath)
         {
             string question = $"ftp put ";
 
             if (File.Exists(filePath))
             {
-                DateTime startTime = DateTime.Now;
                 byte[] bytes = File.ReadAllBytes(filePath);
                 string file = Convert.ToBase64String(bytes);
                 question += $"{file.ToString()} {CommonTools.ScrapFileName(filePath)} \n";
                 string answer = clientCommunicator.QA(question);
-                DateTime endTime = DateTime.Now;
-                double duration = (endTime - startTime).TotalSeconds;
-                return duration;
+                Console.WriteLine(answer);
             }
             else
             {
                 Console.WriteLine("Could not find location : " + filePath);
             }
-            return 0;
         }
 
-        public double FtpList()
+        public void FtpList()
         {
             string question = $"ftp list \n";
-            DateTime startTime = DateTime.Now;
             string answer = clientCommunicator.QA(question);
             Console.WriteLine($"Files on the server : \n {answer}");
-            DateTime endTime = DateTime.Now;
-            double duration = (endTime - startTime).TotalSeconds;
-            return duration;
         }
 
-        public double FtpGet(string fileName)
+        public void FtpGet(string fileName)
         {
-            DateTime startTime = DateTime.Now;
             string question = $"ftp get {fileName} \n";
             string answer = clientCommunicator.QA(question);
             string bytes = CommonTools.ScrapBytes(answer);
             string filePath = ClientTools.GetFilePath(this.filePath, fileName);
             File.WriteAllBytes(filePath, Convert.FromBase64String(bytes));
-            DateTime endTime = DateTime.Now;
-            double duration = (endTime - startTime).TotalSeconds;
-            return duration;
         }
     }
 }

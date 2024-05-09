@@ -17,6 +17,8 @@ namespace Klient.Communicators
             serverAddress = hostname;
             this.port = port;
             client = new UdpClient();
+            client.Client.SendBufferSize = 65536;
+            client.Ttl = 255;
             client.Connect(serverAddress, port);
             //add stop methods for exitting
         }
@@ -24,13 +26,60 @@ namespace Klient.Communicators
         public override string QA(string question)
         {
             byte[] data = Encoding.ASCII.GetBytes(question);
-            
-            client.Send(data, data.Length);
-            
-            IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
-            byte[] receiveBytes = client.Receive(ref remoteEP);
-            string response = Encoding.ASCII.GetString(receiveBytes);
 
+            byte[] sizeBuffer = BitConverter.GetBytes(data.Length);
+            client.Send(sizeBuffer, sizeBuffer.Length);
+
+            int totalBytes = data.Length;
+            int bytesSent = 0;
+            int bufferSize = 1024;
+
+            while (bytesSent < totalBytes)
+            {
+                int bytesToSend = Math.Min(bufferSize, totalBytes - bytesSent);
+                byte[] chunk = new byte[bytesToSend];
+                Array.Copy(data, bytesSent, chunk, 0, bytesToSend);
+
+                client.Send(chunk, chunk.Length);
+                bytesSent += bytesToSend;
+            }
+
+            IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
+            Console.WriteLine(remoteEP);
+
+            byte[] responseBuffer = client.Receive(ref remoteEP);
+            int dataSize = BitConverter.ToInt32(responseBuffer, 0);
+
+            byte[] receivedData = new byte[dataSize];
+            int totalReceived = 0;
+            int bufferSizeReceive = 1024;
+
+
+            while (totalReceived < dataSize)
+            {
+                try
+                {
+                    byte[] tempBuffer = new byte[bufferSizeReceive];
+                    int received = client.Client.Receive(tempBuffer);
+
+                    Buffer.BlockCopy(tempBuffer, 0, receivedData, totalReceived, received);
+                    totalReceived += received;
+
+                }
+                catch (SocketException ex)
+                {
+                    Console.WriteLine($"SocketException: {ex}");
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception: {ex}");
+                    break;
+                }
+            }
+
+            string response = Encoding.ASCII.GetString( receivedData, 0 , receivedData.Length );
+            //Console.WriteLine($"MRS {response}");
             return response;
         }
     }

@@ -25,7 +25,7 @@ namespace Klient.Communicators
         {
             byte[] data = Encoding.ASCII.GetBytes(question);
             NetworkStream stream = client.GetStream();
-            Console.WriteLine($"S: {data.Length} B, {question.SubstringMax(40)}");
+            //Console.WriteLine($"S: {data.Length} B, {question.SubstringMax(40)}");
             stream.Write(data, 0, data.Length);
             data = new byte[4096];
             string odp = string.Empty;
@@ -36,7 +36,7 @@ namespace Klient.Communicators
                 odp += Encoding.ASCII.GetString(data, 0, bytes);
             }
             while (odp.LastIndexOf('\n') == -1);
-            Console.WriteLine($"Odp: {odp.Length} B, {odp.SubstringMax(40)}");
+            //Console.WriteLine($"Odp: {odp.Length} B, {odp.SubstringMax(40)}");
             return odp;
         }
     }

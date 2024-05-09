@@ -32,12 +32,22 @@ namespace Serwer.Listeners
             server.Start();
             while (!shouldTerminate)
             {
-                TcpClient client = server.AcceptTcpClient();
-                if (client != null)
+                try
                 {
-                    Console.WriteLine($"TCP connect: {client.Client.RemoteEndPoint}");
-                    TCPCommunicator tCPCommunicator = new TCPCommunicator(client);
-                    onConnect(tCPCommunicator);
+                    TcpClient client = server.AcceptTcpClient();
+
+                    if (client != null)
+                    {
+                        Console.WriteLine($"TCP connect: {client.Client.RemoteEndPoint}");
+                        TCPCommunicator tCPCommunicator = new TCPCommunicator(client);
+                        onConnect(tCPCommunicator);
+                    }
+                }
+                catch(SocketException ex)
+                {
+                    if (ex.SocketErrorCode == SocketError.Interrupted)
+                        break;
+                    else throw;
                 }
             }
         }

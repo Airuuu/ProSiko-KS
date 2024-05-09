@@ -4,14 +4,16 @@ using Klient.Communicators;
 
 
 
+
 internal class Program
 {
     static string[] availableClients = ["ping", "fpt"];
+    private static string servername = "localhost";
+    private static int TcpPortNo = 12345;
+    private static int UdpPortNo = 12346;
 
     private static void Main(string[] args)
     {
-        //TCPCommunicator clientCommunicator = new TCPCommunicator("localhost", 12345);
-        UDPCommunicator clientCommunicator = new UDPCommunicator("localhost", 12346);
         Console.WriteLine("Welcome to Giga Server");
         string nickname;
         while (true)
@@ -27,8 +29,25 @@ internal class Program
 
         while (true)
         {
+            ClientCommunicator clientCommunicator = null;
             Console.Write($"<{nickname}> $: "); string line = Console.ReadLine();
             string clientComm = ClientTools.GetCommunicator(line);
+            switch(clientComm)
+            {
+                case "tcp":
+                    clientCommunicator = new TCPCommunicator(servername, TcpPortNo);
+                    break;
+                case "udp":
+                    clientCommunicator = new UDPCommunicator(servername, UdpPortNo);
+                    break;
+                case "exit":
+                    Environment.Exit(0);
+                    break;
+                default:
+                    Console.WriteLine("Missing or incorrect communicator option");
+                    break;
+            }
+
             string clientType = ClientTools.GetClient(line);
             switch (clientType)
             {
@@ -36,7 +55,7 @@ internal class Program
                     PingClient pc = new PingClient(clientCommunicator);
                     string[] paramsPing = line.Split(" ");
                     double responseTime = pc.Test(int.Parse(paramsPing[2]), int.Parse(paramsPing[3]), int.Parse(paramsPing[4]));
-                    Console.WriteLine($"Response time : {responseTime}");
+                    Console.WriteLine($"Response time : {responseTime} s");
                     break;
                 case "ftp":
                     FtpClient fc = new FtpClient(clientCommunicator);
@@ -78,6 +97,9 @@ internal class Program
                     string[] paramsConf = line.Split(" ");
                     switch(paramsConf[2])
                     {
+                        case "get-states":
+                            config.GetStates();
+                            break;
                         case "start-service":
                             config.StartService(paramsConf[3]);
                             break;
@@ -85,8 +107,10 @@ internal class Program
                             config.StopService(paramsConf[3]);
                             break;
                         case "start-medium":
+                            config.StartMedium(paramsConf[3]);
                             break;
                         case "stop-medium":
+                            config.StopMedium(paramsConf[3]);
                             break;
                         default:
                             Console.WriteLine("Missing or incorrect client option");
