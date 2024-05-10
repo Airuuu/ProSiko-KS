@@ -1,0 +1,13 @@
+TODO:
+
+MODULES:
+module offline handling <- important for main functionality
+make every module offline during exit command <- server shut down
+
+
+rs module
+file module
+grpc module
+
+config service:
+if using specified module, prevent disabling it <-forcing to let minimum 1 module available, so server wont be functionless

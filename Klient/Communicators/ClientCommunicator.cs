@@ -9,5 +9,6 @@ namespace Klient.Communicators
     internal abstract class ClientCommunicator
     {
         public abstract string QA(string question);
+        
     }
 }

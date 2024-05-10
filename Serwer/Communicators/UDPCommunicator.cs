@@ -1,5 +1,6 @@
 ﻿using Commons;
 using Serwer.Interfaces;
+using Serwer.Services;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -39,41 +40,6 @@ namespace Serwer.Communicators
             shouldTerminate = true;
             client.Close();
         }
-
-        //private async void Communicate()
-        //{
-        //    while (!shouldTerminate)
-        //    {
-        //        IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, portNo);
-
-        //        // Odczytujemy wielkość otrzymanych danych
-        //        byte[] sizeBuffer = client.Receive(ref remoteEndPoint);
-        //        int dataSize = BitConverter.ToInt32(sizeBuffer, 0);
-
-        //        // Odczytujemy dane w pętli, dopóki nie otrzymamy wszystkich
-        //        byte[] receivedData = new byte[dataSize];
-        //        int totalReceived = 0;
-        //        await Console.Out.WriteLineAsync("DS : " + dataSize);
-        //        while (totalReceived < dataSize)
-        //        {
-        //            // Odbieramy dane do tymczasowego bufora
-        //            byte[] tempBuffer = client.Receive(ref remoteEndPoint);
-        //            // Kopiujemy otrzymane dane do właściwego bufora danych
-        //            Buffer.BlockCopy(tempBuffer, 0, receivedData, totalReceived, tempBuffer.Length);
-        //            totalReceived += tempBuffer.Length;
-        //            await Console.Out.WriteLineAsync($"R: {totalReceived}");
-        //        }
-
-        //        Console.WriteLine($"UDP connect: {remoteEndPoint}");
-
-        //        string request = Encoding.ASCII.GetString(receivedData);
-
-        //        string response = onCommand(request);
-
-        //        byte[] sendBytes = Encoding.ASCII.GetBytes(response);
-        //        client.Send(sendBytes, sendBytes.Length, remoteEndPoint);
-        //    }
-        //}
 
         private async void Communicate()
         {
@@ -118,7 +84,19 @@ namespace Serwer.Communicators
 
                     string request = Encoding.ASCII.GetString(receivedData);
 
-                    string response = onCommand(request);
+                    ConfigService config = new ConfigService();
+                    string configAnswer = onCommand("conf get-states");
+
+                    string response = "";
+                    if (request.Split(" ")[0] != "conf" && !ServerTools.GetSpecifiedState(request.Split(" ")[0], configAnswer))
+                    {
+                        response += "Error : Service is OFFLINE! \n";
+                    }
+                    else
+                    {
+                        response += onCommand(request);
+                    }
+
 
                     byte[] data = Encoding.ASCII.GetBytes(response);
                     byte[] buffer = BitConverter.GetBytes(data.Length);

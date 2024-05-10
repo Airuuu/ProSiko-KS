@@ -58,5 +58,12 @@ namespace Commons
             }
             return false;
         }
+
+        public static bool GetSpecifiedServiceState(string serviceName, List<string> services)
+        {
+            if (services.Contains(serviceName))
+                return true;
+            return false;
+        }
     }
 }

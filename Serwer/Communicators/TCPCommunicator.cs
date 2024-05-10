@@ -6,6 +6,8 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Commons;
+using Serwer.Services;
 
 namespace Serwer.Communicators
 {
@@ -47,16 +49,26 @@ namespace Serwer.Communicators
             {
                 while ((len = stream.Read(bytes, 0, bytes.Length)) > 0)
                 {
-                    Console.WriteLine($"R: {len} B");
                     data += Encoding.ASCII.GetString(bytes, 0, len);
                     while ((nl = data.IndexOf('\n')) != -1)
                     {
                         string line = data.Substring(0, nl + 1);
                         data = data.Substring(nl + 1);
-                        Console.WriteLine($"{line.SubstringMax(40)}");
-                        //Console.WriteLine($"R: {line.Length} B, {line.SubstringMax(40)}");
-                        string answer = onCommand(line);
-                        //Console.WriteLine($"S: {answer.Length} B, {answer.SubstringMax(40)}");
+                        
+
+                        ConfigService config = new ConfigService();
+                        string configAnswer = onCommand("conf get-states");
+
+                        string answer = "";
+                        if (line.Split(" ")[0] != "conf" && !ServerTools.GetSpecifiedState(line.Split(" ")[0], configAnswer))
+                        {
+                            answer += "Error : Service is OFFLINE! \n";
+                        }
+                        else
+                        {
+                            answer += onCommand(line);
+                        }
+
                         byte[] msg = Encoding.ASCII.GetBytes(answer);
                         stream.Write(msg, 0, msg.Length);
                     }

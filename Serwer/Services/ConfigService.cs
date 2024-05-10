@@ -91,16 +91,8 @@ namespace Serwer.Services
         {
 
             List<string> listeners = _listenersState();
-            foreach (string listener in listeners)
-            {
-                Console.WriteLine(listener);
-            }
-
             List<string> services = _servicesState();
-            foreach (string service in services)
-            {
-                Console.WriteLine(service);
-            }
+
             List<Tuple<string, string>> states = new List<Tuple<string, string>>();
             foreach (string item in modulesAndServices)
             {

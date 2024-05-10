@@ -2,6 +2,7 @@
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Intrinsics.Arm;
 using System.Text;
 
 namespace Klient.Communicators
@@ -45,7 +46,6 @@ namespace Klient.Communicators
             }
 
             IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
-            Console.WriteLine(remoteEP);
 
             byte[] responseBuffer = client.Receive(ref remoteEP);
             int dataSize = BitConverter.ToInt32(responseBuffer, 0);
@@ -79,7 +79,8 @@ namespace Klient.Communicators
             }
 
             string response = Encoding.ASCII.GetString( receivedData, 0 , receivedData.Length );
-            //Console.WriteLine($"MRS {response}");
+            if (response.Split(" ")[0] == "Error")
+                Console.WriteLine(response);
             return response;
         }
     }
