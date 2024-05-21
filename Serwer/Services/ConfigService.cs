@@ -130,6 +130,8 @@ namespace Serwer.Services
                 return "Medium is already ONLINE!\n";
             switch (mediumName)
             {
+                case "file":
+                    break;
                 case "tcp":
                     _connectListener(new TCPListener(12345), true);
                     break;
@@ -138,6 +140,8 @@ namespace Serwer.Services
                     break;
                 case "com":
                     _connectListener(new COMListener("COM3"), true);
+                    break;
+                case "grpc":
                     break;
                 default:
                     return "Medium not found";

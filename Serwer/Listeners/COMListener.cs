@@ -36,6 +36,7 @@ namespace Serwer.Listeners
             if (serialPort != null && serialPort.IsOpen)
             {
                 serialPort.Close();
+
             }
         }
         private async void Listen()

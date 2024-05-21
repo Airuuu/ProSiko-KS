@@ -15,6 +15,7 @@ namespace Serwer.Listeners
         CommunicatorD onConnect;
         TcpListener server;
         bool shouldTerminate;
+        //TCPCommunicator tCPCommunicator;
 
         public TCPListener(int portNo) { this.portNo = portNo; }
 
@@ -40,7 +41,9 @@ namespace Serwer.Listeners
                     {
                         Console.WriteLine($"TCP connect: {client.Client.RemoteEndPoint}");
                         TCPCommunicator tCPCommunicator = new TCPCommunicator(client);
+                        //tCPCommunicator = new TCPCommunicator(client);
                         onConnect(tCPCommunicator);
+                        //tCPCommunicator.Stop();
                     }
                 }
                 catch(SocketException ex)
@@ -55,6 +58,7 @@ namespace Serwer.Listeners
         public void Stop()
         {
             shouldTerminate = true;
+            //tCPCommunicator.Stop();
             server.Stop();
         }
     }

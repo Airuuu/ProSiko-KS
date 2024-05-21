@@ -50,5 +50,36 @@ namespace Commons
                 return false;
             }
         }
+
+        public static void PrintManual()
+        {
+            Console.WriteLine("Available media:\n" +
+                "file\ttcp\tudp\tcom\tgrpc\n\n" +
+                "Avaiable services:\n" +
+                "ping [n] [intputLen] [outputLen]- check server response\n" +
+                "Args: \n" +
+                "\tn-times\n" +
+                "\tinputLen - input length\n" +
+                "\toutputLen - output length\n\n" +
+                "ftp [action] [file] - manage the files\n" +
+                "Args: \n" +
+                "\taction - put | get | list\n" +
+                "\tfile - file you want to get/upload (not required for list)\n\n" +
+                "chat [action] [destinationUser] [message]\n" +
+                "\taction - msg | get\n" +
+                "\tif action is msg:\n" +
+                "\t\tdestinationUser - user you want to send the message\n" +
+                "\t\tmessage - your message\n\n" +
+                "conf [action]\n" +
+                "Args: \n" +
+                "action - get-states | start-service | stop-service | start-medium | stop-medium\n\n" +
+                "Example inputs:\n" +
+                "tcp ping 10 1024 2048\n" +
+                "com ftp list\n" +
+                "udp ftp get ugabuga.txt\n" +
+                "file message get\n" +
+                "grpc conf get-states\n" +
+                "tcp conf start-module udp\n");
+        }
     }
 }

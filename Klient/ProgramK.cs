@@ -31,6 +31,7 @@ internal class Program
             ClientCommunicator clientCommunicator = null;
             Console.Write($"<{nickname}> $: "); string line = Console.ReadLine();
             string clientComm = ClientTools.GetCommunicator(line);
+            bool isHelp = false;
             switch(clientComm)
             {
                 case "tcp":
@@ -41,6 +42,14 @@ internal class Program
                     break;
                 case "com":
                     clientCommunicator = new COMCommunicator(serialPortName);
+                    break;
+                case "help":
+                    ClientTools.PrintManual();
+                    isHelp = true;
+                    break;
+                case "clear":
+                    Console.Clear();
+                    isHelp = true;
                     break;
                 case "exit":
                     Environment.Exit(0);
@@ -128,7 +137,8 @@ internal class Program
                     }
                     break;
                 case "none":
-                    Console.WriteLine("Service is required!");
+                    if(!isHelp)
+                        Console.WriteLine("Service is required!");
                     break;
                 default:
                     Console.WriteLine("Missing or incorrect client type");

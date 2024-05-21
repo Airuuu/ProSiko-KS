@@ -60,19 +60,20 @@ namespace Serwer
 
         public string DisconnectListener(string name)
         {
-            foreach(var listener in listeners)
+
+            foreach (var listener in listeners)
             {
                 if (listener.ToString().ToLower().Contains(name.ToLower()))
                 {
                     listener.Stop();
                     listeners.Remove(listener);
 
-                    
                     return $"Listener {name} disconnected";
                 }
             }
             return $"Listener {name} not found";
         }
+
         public void AddCommunicator(ICommunicator communicator)
         {
             communicators.Add(communicator);
@@ -90,7 +91,6 @@ namespace Serwer
             {
                 var commandType = GetCommandType(command);
                 var service = services[commandType] ?? null;
-                //service check goes here
                 return service.AnswerCommand(command);
             }
             catch (Exception ex)
@@ -110,7 +110,9 @@ namespace Serwer
         public void AddListener(IListener listener, bool isRequested = false)
         {
             listeners.Add(listener);
-            //listener.Start(AddCommunicator);
+            if(isRequested) {
+                listener.Start(AddCommunicator);
+            }
         }
 
         internal void Start()
