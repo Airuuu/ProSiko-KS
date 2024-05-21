@@ -66,6 +66,8 @@ namespace Serwer
                 {
                     listener.Stop();
                     listeners.Remove(listener);
+
+                    
                     return $"Listener {name} disconnected";
                 }
             }
@@ -108,7 +110,7 @@ namespace Serwer
         public void AddListener(IListener listener, bool isRequested = false)
         {
             listeners.Add(listener);
-            
+            //listener.Start(AddCommunicator);
         }
 
         internal void Start()

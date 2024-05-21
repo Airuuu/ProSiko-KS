@@ -21,7 +21,6 @@ namespace Klient.Communicators
             client.Client.SendBufferSize = 65536;
             client.Ttl = 255;
             client.Connect(serverAddress, port);
-            //add stop methods for exitting
         }
 
         public override string QA(string question)
@@ -34,6 +33,7 @@ namespace Klient.Communicators
             int totalBytes = data.Length;
             int bytesSent = 0;
             int bufferSize = 1024;
+            IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
 
             while (bytesSent < totalBytes)
             {
@@ -43,43 +43,29 @@ namespace Klient.Communicators
 
                 client.Send(chunk, chunk.Length);
                 bytesSent += bytesToSend;
+
+                byte[] ackBuffer = client.Receive(ref remoteEP);
             }
 
-            IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
-
-            byte[] responseBuffer = client.Receive(ref remoteEP);
-            int dataSize = BitConverter.ToInt32(responseBuffer, 0);
+            byte[] responseSizeBuffer = client.Receive(ref remoteEP);
+            int dataSize = BitConverter.ToInt32(responseSizeBuffer, 0);
 
             byte[] receivedData = new byte[dataSize];
             int totalReceived = 0;
-            int bufferSizeReceive = 1024;
-
 
             while (totalReceived < dataSize)
             {
-                try
-                {
-                    byte[] tempBuffer = new byte[bufferSizeReceive];
-                    int received = client.Client.Receive(tempBuffer);
+                byte[] tempBuffer = client.Receive(ref remoteEP);
+                int bytesToCopy = Math.Min(tempBuffer.Length, dataSize - totalReceived);
 
-                    Buffer.BlockCopy(tempBuffer, 0, receivedData, totalReceived, received);
-                    totalReceived += received;
+                Array.Copy(tempBuffer, 0, receivedData, totalReceived, bytesToCopy);
+                totalReceived += bytesToCopy;
 
-                }
-                catch (SocketException ex)
-                {
-                    Console.WriteLine($"SocketException: {ex}");
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Exception: {ex}");
-                    break;
-                }
+                client.Send(new byte[] { 1 }, 1);
             }
 
-            string response = Encoding.ASCII.GetString( receivedData, 0 , receivedData.Length );
-            if (response.Split(" ")[0] == "Error")
+            string response = Encoding.ASCII.GetString(receivedData, 0, receivedData.Length);
+            if (response.StartsWith("Error"))
                 Console.WriteLine(response);
             return response;
         }

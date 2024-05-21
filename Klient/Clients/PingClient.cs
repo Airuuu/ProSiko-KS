@@ -25,6 +25,7 @@ namespace Klient.Clients
             for (int i = 0; i < amount; i++)
             {
                 string answer = clientCommunicator.QA(question);
+                Console.WriteLine($"Ping {i+1} / {amount}");
             }
             DateTime endTime = DateTime.Now;
             double duration = (endTime - startTime).TotalSeconds / amount;

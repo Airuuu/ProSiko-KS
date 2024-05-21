@@ -41,7 +41,7 @@ namespace Serwer.Communicators
             client.Close();
         }
 
-        private async void Communicate()
+        private void Communicate()
         {
             try
             {
@@ -56,64 +56,40 @@ namespace Serwer.Communicators
                     int totalReceived = 0;
                     int bufferSize = 1024;
 
-
                     while (totalReceived < dataSize)
                     {
-                        try
-                        {
-                            byte[] tempBuffer = new byte[bufferSize];
-                            int received = client.Client.Receive(tempBuffer);
+                        byte[] tempBuffer = client.Receive(ref remoteEndPoint);
+                        int bytesToCopy = Math.Min(tempBuffer.Length, dataSize - totalReceived);
 
-                            Buffer.BlockCopy(tempBuffer, 0, receivedData, totalReceived, received);
-                            totalReceived += received;
+                        Array.Copy(tempBuffer, 0, receivedData, totalReceived, bytesToCopy);
+                        totalReceived += bytesToCopy;
 
-                        }
-                        catch (SocketException ex)
-                        {
-                            Console.WriteLine($"SocketException: {ex}");
-                            break;
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Exception: {ex}");
-                            break;
-                        }
+                        client.Send(new byte[] { 1 }, 1, remoteEndPoint);
                     }
 
                     Console.WriteLine($"UDP connect: {remoteEndPoint}");
 
+
                     string request = Encoding.ASCII.GetString(receivedData);
 
-                    ConfigService config = new ConfigService();
-                    string configAnswer = onCommand("conf get-states");
+                    string response = HandleRequest(request);
 
-                    string response = "";
-                    if (request.Split(" ")[0] != "conf" && !ServerTools.GetSpecifiedState(request.Split(" ")[0], configAnswer))
-                    {
-                        response += "Error : Service is OFFLINE! \n";
-                    }
-                    else
-                    {
-                        response += onCommand(request);
-                    }
+                    byte[] responseData = Encoding.ASCII.GetBytes(response);
+                    byte[] responseSizeBuffer = BitConverter.GetBytes(responseData.Length);
+                    client.Send(responseSizeBuffer, responseSizeBuffer.Length, remoteEndPoint);
 
-
-                    byte[] data = Encoding.ASCII.GetBytes(response);
-                    byte[] buffer = BitConverter.GetBytes(data.Length);
-                    int totalBytes = data.Length;
                     int bytesSent = 0;
-                    int bSize = 1024;
-                    client.Send(buffer, buffer.Length, remoteEndPoint);
-
-                    while(bytesSent < totalBytes) {
-                        int bytesToSend = Math.Min(bSize, totalBytes - bytesSent);
+                    while (bytesSent < responseData.Length)
+                    {
+                        int bytesToSend = Math.Min(bufferSize, responseData.Length - bytesSent);
                         byte[] chunk = new byte[bytesToSend];
-                        Array.Copy(data, bytesSent, chunk, 0, bytesToSend);
+                        Array.Copy(responseData, bytesSent, chunk, 0, bytesToSend);
 
                         client.Send(chunk, chunk.Length, remoteEndPoint);
                         bytesSent += bytesToSend;
+
+                        byte[] ackBuffer = client.Receive(ref remoteEndPoint);
                     }
-                    
                 }
             }
             catch (Exception ex)
@@ -122,5 +98,17 @@ namespace Serwer.Communicators
             }
         }
 
+        private string HandleRequest(string request)
+        {
+            ConfigService config = new ConfigService();
+            string configAnswer = onCommand("conf get-states");
+
+            if (request.Split(" ")[0] != "conf" && !ServerTools.GetSpecifiedState(request.Split(" ")[0], configAnswer))
+            {
+                return "Error: Service is OFFLINE!\n";
+            }
+            return onCommand(request);
+        }
     }
+
 }

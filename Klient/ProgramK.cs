@@ -2,13 +2,12 @@
 using Klient.Clients;
 using Klient.Communicators;
 
-
-
-
 internal class Program
 {
-    static string[] availableClients = ["ping", "fpt"];
+    
     private static string servername = "localhost";
+    private static string serialPortName = "COM2";
+
     private static int TcpPortNo = 12345;
     private static int UdpPortNo = 12346;
 
@@ -40,8 +39,14 @@ internal class Program
                 case "udp":
                     clientCommunicator = new UDPCommunicator(servername, UdpPortNo);
                     break;
+                case "com":
+                    clientCommunicator = new COMCommunicator(serialPortName);
+                    break;
                 case "exit":
                     Environment.Exit(0);
+                    break;
+                case "none":
+                    Console.WriteLine("Command is required!");
                     break;
                 default:
                     Console.WriteLine("Missing or incorrect communicator option");
@@ -54,6 +59,11 @@ internal class Program
                 case "ping":
                     PingClient pc = new PingClient(clientCommunicator);
                     string[] paramsPing = line.Split(" ");
+                    if(!ClientTools.PingClientParamsHandler(paramsPing))
+                    {
+                        Console.WriteLine("Correct ping params are required!");
+                        break;
+                    }
                     double responseTime = pc.Test(int.Parse(paramsPing[2]), int.Parse(paramsPing[3]), int.Parse(paramsPing[4]));
                     Console.WriteLine($"Response time : {responseTime} s");
                     break;
@@ -116,6 +126,9 @@ internal class Program
                             Console.WriteLine("Missing or incorrect client option");
                             break;
                     }
+                    break;
+                case "none":
+                    Console.WriteLine("Service is required!");
                     break;
                 default:
                     Console.WriteLine("Missing or incorrect client type");

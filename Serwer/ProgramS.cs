@@ -20,7 +20,11 @@ namespace Serwer
             serwer.AddServiceModule("conf", new ConfigService());
             Console.WriteLine("Config initiated");
             serwer.AddListener(new TCPListener(12345));
+            Console.WriteLine("TCP Online");
             serwer.AddListener(new UDPListener(12346));
+            Console.WriteLine("UDP Online");
+            serwer.AddListener(new COMListener("COM3"));
+            Console.WriteLine("COM Online");
             serwer.Start();
         }
     }

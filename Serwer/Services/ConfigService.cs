@@ -23,7 +23,7 @@ namespace Serwer.Services
 
         private List<string> modulesAndServices = new List<string>
         {
-            "tcp", "udp", "ping", "ftp", "chat"
+            "tcp", "udp", "com", "ping", "ftp", "chat"
         };
 
         public ConfigService()
@@ -135,6 +135,9 @@ namespace Serwer.Services
                     break;
                 case "udp":
                     _connectListener(new UDPListener(12346), true);
+                    break;
+                case "com":
+                    _connectListener(new COMListener("COM3"), true);
                     break;
                 default:
                     return "Medium not found";
