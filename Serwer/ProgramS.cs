@@ -25,6 +25,8 @@ namespace Serwer
             Console.WriteLine("UDP Online");
             serwer.AddListener(new COMListener("COM3"));
             Console.WriteLine("COM Online");
+            serwer.AddListener(new GRPCListener(12347));
+            Console.WriteLine("gRPC Online");
             serwer.Start();
         }
     }
