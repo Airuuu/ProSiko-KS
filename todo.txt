@@ -4,6 +4,3 @@ file module
 grpc module
 
 
-KNOWN BUGS:
-Any module disconnect, then connect them back (except udp)
-

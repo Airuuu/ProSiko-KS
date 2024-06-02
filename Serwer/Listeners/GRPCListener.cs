@@ -2,10 +2,7 @@
 using Serwer.Communicators;
 using Serwer.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Serwer.Listeners
 {
@@ -23,14 +20,22 @@ namespace Serwer.Listeners
         public void Start(CommunicatorD onConnect)
         {
             this.onConnect = onConnect;
+            GRPCCommunicator gRPCCommunicator = new GRPCCommunicator();
 
-            server = new Server
+            var options = new List<ChannelOption>
             {
-                Services = { QAService.BindService(new GRPCCommunicator(onConnect)) },
-                Ports = { new ServerPort("localhost", portNo, ServerCredentials.Insecure) }
+                new ChannelOption(ChannelOptions.MaxSendMessageLength, int.MaxValue),
+                new ChannelOption(ChannelOptions.MaxReceiveMessageLength, int.MaxValue)
             };
 
+            server = new Server(options)
+            {
+                Services = { QAService.BindService(gRPCCommunicator) },
+                Ports = { new ServerPort("localhost", portNo, ServerCredentials.Insecure) },
+            };
+            
             server.Start();
+            onConnect(gRPCCommunicator);
         }
 
         public void Stop()
@@ -40,5 +45,7 @@ namespace Serwer.Listeners
                 server.ShutdownAsync().Wait();
             }
         }
+
     }
 }
+

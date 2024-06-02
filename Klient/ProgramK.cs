@@ -7,6 +7,7 @@ internal class Program
     
     private static string servername = "localhost";
     private static string serialPortName = "COM2";
+    private static string grpclink = "http://localhost:12347";
 
     private static int TcpPortNo = 12345;
     private static int UdpPortNo = 12346;
@@ -34,6 +35,8 @@ internal class Program
             bool isHelp = false;
             switch(clientComm)
             {
+                case "file":
+                    break;
                 case "tcp":
                     clientCommunicator = new TCPCommunicator(servername, TcpPortNo);
                     break;
@@ -42,6 +45,9 @@ internal class Program
                     break;
                 case "com":
                     clientCommunicator = new COMCommunicator(serialPortName);
+                    break;
+                case "grpc":
+                    clientCommunicator = new GRPCCommunicator(grpclink);
                     break;
                 case "help":
                     ClientTools.PrintManual();

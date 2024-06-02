@@ -1,4 +1,5 @@
 ﻿using Commons;
+using Serwer.Communicators;
 using Serwer.Interfaces;
 using Serwer.Listeners;
 using System;
@@ -23,7 +24,7 @@ namespace Serwer.Services
 
         private List<string> modulesAndServices = new List<string>
         {
-            "tcp", "udp", "com", "ping", "ftp", "chat"
+            "file", "tcp", "udp", "com", "grpc", "ping", "ftp", "chat"
         };
 
         public ConfigService()
@@ -142,6 +143,7 @@ namespace Serwer.Services
                     _connectListener(new COMListener("COM3"), true);
                     break;
                 case "grpc":
+                    _connectListener(new GRPCListener(12347), true);
                     break;
                 default:
                     return "Medium not found";
