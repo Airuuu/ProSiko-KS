@@ -37,7 +37,6 @@ namespace Commons
 
         public static string GetFilePath(string command, string loc)
         {
-            //string loc = @"C:\ftpS\";
             string[] lines = command.Split(" ");
             string fileName = lines[lines.Length - 2];
             string filePath = @$"{ServerTools.FileExistCounter(loc, loc + fileName)}";
@@ -46,7 +45,6 @@ namespace Commons
 
         public static bool GetSpecifiedState(string serviceName, string allStates)
         {
-            //return allStates.Contains(serviceName);
             string[] parts = allStates.Split(" ");
             for (int i = 0; i < parts.Length; i++)
             {
@@ -64,6 +62,14 @@ namespace Commons
             if (services.Contains(serviceName))
                 return true;
             return false;
+        }
+
+        public static void CheckDirectories()
+        {
+            Directory.CreateDirectory(@"C:\FC\requests");
+            Directory.CreateDirectory(@"C:\FC\responses");
+            Directory.CreateDirectory(@"C:\ftpS");
+            Directory.CreateDirectory(@"C:\ftpC");
         }
     }
 }

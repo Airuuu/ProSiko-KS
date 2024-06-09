@@ -72,7 +72,7 @@ namespace Serwer.Communicators
 
                     string request = Encoding.ASCII.GetString(receivedData);
 
-                    string response = HandleRequest(request);
+                    string response = ProcessCommand(request);
 
                     byte[] responseData = Encoding.ASCII.GetBytes(response);
                     byte[] responseSizeBuffer = BitConverter.GetBytes(responseData.Length);
@@ -98,7 +98,7 @@ namespace Serwer.Communicators
             }
         }
 
-        private string HandleRequest(string request)
+        private string ProcessCommand(string request)
         {
             ConfigService config = new ConfigService();
             string configAnswer = onCommand("conf get-states");

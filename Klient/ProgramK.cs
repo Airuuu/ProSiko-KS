@@ -36,6 +36,7 @@ internal class Program
             switch(clientComm)
             {
                 case "file":
+                    clientCommunicator = new FileCommunicator();
                     break;
                 case "tcp":
                     clientCommunicator = new TCPCommunicator(servername, TcpPortNo);

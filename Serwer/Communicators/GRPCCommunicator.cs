@@ -15,17 +15,12 @@ namespace Serwer.Communicators
         private CommunicatorD onConnect;
         private CommandD onCommand;
         private CommunicatorD onDisconnect;
-        //public GRPCCommunicator(CommunicatorD onConnect)
-        //{
-        //    this.onConnect = onConnect;
-        //}
 
         public override Task<Answer> AskQuestion(Question request, ServerCallContext context)
         {
             string question = request.Text;
 
             string answerText = ProcessCommand(question);
-            //string answerText = "ugabuga";
 
             Answer answer = new Answer { Text = answerText };
             return Task.FromResult(answer);

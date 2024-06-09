@@ -54,20 +54,10 @@ namespace Serwer.Communicators
                     {
                         string line = data.Substring(0, nl + 1);
                         data = data.Substring(nl + 1);
-                        
 
-                        ConfigService config = new ConfigService();
-                        string configAnswer = onCommand("conf get-states");
+                        //string answer = "";
+                        string answer = ProcessCommand(line);
 
-                        string answer = "";
-                        if (line.Split(" ")[0] != "conf" && !ServerTools.GetSpecifiedState(line.Split(" ")[0], configAnswer))
-                        {
-                            answer += "Error : Service is OFFLINE! \n";
-                        }
-                        else
-                        {
-                            answer += onCommand(line);
-                        }
 
                         byte[] msg = Encoding.ASCII.GetBytes(answer);
                         stream.Write(msg, 0, msg.Length);
@@ -80,6 +70,25 @@ namespace Serwer.Communicators
                 client.Close();
                 onDisconnect(this);
             }
+
+
+        }
+
+        private string ProcessCommand(string line)
+        {
+
+            ConfigService config = new ConfigService();
+            string configAnswer = onCommand("conf get-states");
+            string answer = "";
+            if (line.Split(" ")[0] != "conf" && !ServerTools.GetSpecifiedState(line.Split(" ")[0], configAnswer))
+            {
+                answer += "Error : Service is OFFLINE! \n";
+            }
+            else
+            {
+                answer += onCommand(line);
+            }
+            return answer;
         }
     }
 }
