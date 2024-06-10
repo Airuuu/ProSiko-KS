@@ -54,7 +54,7 @@ namespace Serwer.Communicators
                         string answer = ProcessCommand(line);
                         WriteToSerialPort(answer);
                     }
-                    await Task.Delay(100);
+                    //await Task.Delay(100);
                 }
             }
             catch (Exception ex)

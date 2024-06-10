@@ -151,6 +151,8 @@ internal class Program
                     Console.WriteLine("Missing or incorrect client type");
                     break;
             }
+            if (clientCommunicator is COMCommunicator)
+                ((COMCommunicator) clientCommunicator).Dispose();
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Klient.Communicators
 {
-    internal class COMCommunicator : ClientCommunicator
+    internal class COMCommunicator : ClientCommunicator, IDisposable
     {
         private string portName;
         private SerialPort serialPort;
@@ -17,15 +17,15 @@ namespace Klient.Communicators
             this.portName = portName;
             serialPort = new SerialPort(portName);
             this.serialPort.BaudRate = 115200;
-
+            serialPort.Open();
         }
 
         public override string QA(string question)
         {
-            serialPort.Open();
+            //serialPort.Open();
             WriteToSerialPort(question);
             string response = ReadFromSerialPort();
-            serialPort.Close();
+            //serialPort.Close();
             return response;
         }
 
@@ -53,7 +53,7 @@ namespace Klient.Communicators
                     sb.Append(serialPort.ReadExisting());
                     if (sb.ToString().Contains("\n"))
                         break;
-                    Thread.Sleep(100);
+                    //Thread.Sleep(100);
                 }
             }
             catch (Exception ex)
@@ -61,6 +61,12 @@ namespace Klient.Communicators
                 Console.WriteLine("Read Error: " + ex.Message);
             }
             return sb.ToString().Trim();
+        }
+
+        public void Dispose()
+        {
+            serialPort.Close();
+            serialPort.Dispose();
         }
     }
 }

@@ -24,7 +24,6 @@ namespace Klient.Communicators
 
             channel = GrpcChannel.ForAddress(grpclink, channelOptions);
             client = new QAService.QAServiceClient(channel);
-
         }
 
         public override string QA(string question)
