@@ -73,6 +73,7 @@ namespace Commons
                 "conf [action]\n" +
                 "Args: \n" +
                 "action - get-states | start-service | stop-service | start-medium | stop-medium\n\n" +
+                "test - testing times for all communicators\n\n" +
                 "Example inputs:\n" +
                 "tcp ping 10 1024 2048\n" +
                 "com ftp list\n" +

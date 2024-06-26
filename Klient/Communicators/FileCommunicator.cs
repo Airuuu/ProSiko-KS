@@ -35,24 +35,30 @@ namespace Klient.Communicators
             bool responseFlag = false;
 
 
+            //Create files containing the request file and the monitoring file
             requestFile = Path.Combine(requestPath, $"{UID}.txt");
             infoFile = Path.Combine(requestPath, $"{UID}_info.txt");
 
+            //System watcher config
             watcher.Path = responsePath;
             watcher.Filter = $"{UID}_info.txt";
             watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite;
-
+            //Start monitoring
             watcher.EnableRaisingEvents = true;
 
+            //Ensure that the code in it is executed by only one thread at a time
             lock (locker)
             {
                 File.WriteAllText(requestFile, question);
                 File.WriteAllText(infoFile, response);
 
+                //Subscribe the event
                 watcher.Created += (source, fileEvent) =>
                 {
+                    //Synchronize
                     lock (locker)
                     {
+                        //If the answer is not processed yet
                         if (!responseFlag)
                         {
                             responseFlag = true;
@@ -69,12 +75,18 @@ namespace Klient.Communicators
                     }
                 };
 
+                //Wait for answer
                 Monitor.Wait(locker);
             }
 
             watcher.EnableRaisingEvents = false;
 
             return response;
+        }
+
+        public override void Dispose()
+        {
+            watcher.Dispose();
         }
     }
 }

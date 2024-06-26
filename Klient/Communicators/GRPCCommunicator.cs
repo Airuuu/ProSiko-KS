@@ -37,5 +37,10 @@ namespace Klient.Communicators
             return answer.Text;
 
         }
+
+        public override void Dispose()
+        {
+            channel.Dispose();
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace Klient.Clients
         {
         }
 
-        public double Test(int amount, int outputLen, int inputLen)
+        public double Test(int amount, int outputLen, int inputLen, bool outputFlag = true)
         {
             string question = $"ping {inputLen} ";
             question += CommonTools.Trush(outputLen - question.Length - 1);
@@ -25,7 +25,8 @@ namespace Klient.Clients
             for (int i = 0; i < amount; i++)
             {
                 string answer = clientCommunicator.QA(question);
-                Console.WriteLine($"Ping {i+1} / {amount}");
+                if (outputFlag)
+                    Console.WriteLine($"Ping {i+1} / {amount}");
             }
             DateTime endTime = DateTime.Now;
             double duration = (endTime - startTime).TotalSeconds / amount;

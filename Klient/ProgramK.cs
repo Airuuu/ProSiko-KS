@@ -1,4 +1,5 @@
 ﻿using Commons;
+using Klient;
 using Klient.Clients;
 using Klient.Communicators;
 
@@ -33,6 +34,8 @@ internal class Program
             Console.Write($"<{nickname}> $: "); string line = Console.ReadLine();
             string clientComm = ClientTools.GetCommunicator(line);
             bool isHelp = false;
+            bool isTest = false;
+            bool isParameterMissing = false;
             switch(clientComm)
             {
                 case "file":
@@ -50,6 +53,9 @@ internal class Program
                 case "grpc":
                     clientCommunicator = new GRPCCommunicator(grpclink);
                     break;
+                case "test":
+                    isTest = true;
+                    break;
                 case "help":
                     ClientTools.PrintManual();
                     isHelp = true;
@@ -66,6 +72,7 @@ internal class Program
                     break;
                 default:
                     Console.WriteLine("Missing or incorrect communicator option");
+                    isParameterMissing = true;
                     break;
             }
 
@@ -146,13 +153,23 @@ internal class Program
                 case "none":
                     if(!isHelp)
                         Console.WriteLine("Service is required!");
+
+                    if (isTest) 
+                    { 
+                        PingTest test = new PingTest(servername, serialPortName, grpclink, TcpPortNo, UdpPortNo);
+                        test.Begin();
+                        test.Results();
+                        test.Dispose();
+                    }
+
                     break;
                 default:
                     Console.WriteLine("Missing or incorrect client type");
+                    isParameterMissing = true;
                     break;
             }
-            if (clientCommunicator is COMCommunicator)
-                ((COMCommunicator) clientCommunicator).Dispose();
+            if (!isHelp && !isTest && isParameterMissing)
+                clientCommunicator.Dispose();
         }
     }
 }

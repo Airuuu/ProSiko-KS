@@ -52,7 +52,8 @@ namespace Serwer.Listeners
                         var communicator = new COMCommunicator(serialPort);
                         onConnect(communicator);
                     }
-                    await Task.Delay(100);
+                    //nc
+                    //await Task.Delay(100);
                 }
                 catch (Exception ex)
                 {

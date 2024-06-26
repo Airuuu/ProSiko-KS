@@ -74,7 +74,8 @@ namespace Serwer.Communicators
                     sb.Append(serialPort.ReadExisting());
                     if (sb.ToString().Contains("\n"))
                         break;
-                    await Task.Delay(100);
+                    //nc
+                    //await Task.Delay(100);
                 }
             }
             catch (Exception ex)

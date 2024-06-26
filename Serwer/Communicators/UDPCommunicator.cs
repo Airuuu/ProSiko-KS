@@ -47,6 +47,8 @@ namespace Serwer.Communicators
             {
                 while (!shouldTerminate)
                 {
+
+                    //Transfer trackers - Receiving question
                     IPEndPoint remoteEndPoint = new IPEndPoint(IPAddress.Any, portNo);
 
                     byte[] sizeBuffer = client.Receive(ref remoteEndPoint);
@@ -56,6 +58,7 @@ namespace Serwer.Communicators
                     int totalReceived = 0;
                     int bufferSize = 1024;
 
+                    //Receiving data, sending ACK
                     while (totalReceived < dataSize)
                     {
                         byte[] tempBuffer = client.Receive(ref remoteEndPoint);
@@ -74,11 +77,14 @@ namespace Serwer.Communicators
 
                     string response = ProcessCommand(request);
 
+                    //Transfer trackers - Answer
                     byte[] responseData = Encoding.ASCII.GetBytes(response);
                     byte[] responseSizeBuffer = BitConverter.GetBytes(responseData.Length);
                     client.Send(responseSizeBuffer, responseSizeBuffer.Length, remoteEndPoint);
 
                     int bytesSent = 0;
+
+                    //Sending data, expecting ACK
                     while (bytesSent < responseData.Length)
                     {
                         int bytesToSend = Math.Min(bufferSize, responseData.Length - bytesSent);

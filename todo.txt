@@ -1,4 +1,1 @@
-implementacja iDisposable do QA klienta.
-COM - check sleeps
-File - zmiana implementacji na przechwytywanie wyjątku
 ping - analiza szybkości dla mniejszych większych pakietów

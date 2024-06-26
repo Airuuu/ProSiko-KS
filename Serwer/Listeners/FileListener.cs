@@ -34,12 +34,13 @@ namespace Serwer.Listeners
 
         private void Listen()
         {
+            //System watcher config (exact as client-side)
             watcher.Path = requestPath;
             watcher.Filter = "*_info.txt";
             watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite;
 
+            //Subscribe and wait for the event
             watcher.Created += OnRequestReceived;
-
             watcher.EnableRaisingEvents = true;
 
             while (!shouldTerminate) { }

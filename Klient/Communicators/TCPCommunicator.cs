@@ -21,6 +21,12 @@ namespace Klient.Communicators
             client = new TcpClient(hostname, port);
         }
 
+        public override void Dispose()
+        {
+            client.Close();
+            client.Dispose();
+        }
+
         public override string QA(string question)
         {
 

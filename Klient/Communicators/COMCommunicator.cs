@@ -63,7 +63,7 @@ namespace Klient.Communicators
             return sb.ToString().Trim();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             serialPort.Close();
             serialPort.Dispose();

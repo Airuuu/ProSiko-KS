@@ -27,14 +27,17 @@ namespace Klient.Communicators
         {
             byte[] data = Encoding.ASCII.GetBytes(question);
 
+            //Send data size
             byte[] sizeBuffer = BitConverter.GetBytes(data.Length);
             client.Send(sizeBuffer, sizeBuffer.Length);
 
+            //Transfer trackers - Question
             int totalBytes = data.Length;
             int bytesSent = 0;
             int bufferSize = 1024;
             IPEndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
 
+            //Sending data, expecting ACK
             while (bytesSent < totalBytes)
             {
                 int bytesToSend = Math.Min(bufferSize, totalBytes - bytesSent);
@@ -47,12 +50,13 @@ namespace Klient.Communicators
                 byte[] ackBuffer = client.Receive(ref remoteEP);
             }
 
+            //Transfer trackers - Answer
             byte[] responseSizeBuffer = client.Receive(ref remoteEP);
             int dataSize = BitConverter.ToInt32(responseSizeBuffer, 0);
-
             byte[] receivedData = new byte[dataSize];
             int totalReceived = 0;
 
+            //Receiving data, sending ACK
             while (totalReceived < dataSize)
             {
                 byte[] tempBuffer = client.Receive(ref remoteEP);
@@ -68,6 +72,12 @@ namespace Klient.Communicators
             if (response.StartsWith("Error"))
                 Console.WriteLine(response);
             return response;
+        }
+
+        public override void Dispose()
+        {
+            client.Close();
+            client.Dispose();
         }
     }
 }
